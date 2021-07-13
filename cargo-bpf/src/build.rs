@@ -71,7 +71,13 @@ impl From<Error> for CommandError {
     }
 }
 
-fn build_probe(cargo: &Path, package: &Path, target_dir: &Path, probe: &str) -> Result<(), Error> {
+fn build_probe(
+    cargo: &Path,
+    package: &Path,
+    target_dir: &Path,
+    probe: &str,
+    kernel_source_dir: Option<&Path>,
+) -> Result<(), Error> {
     fs::create_dir_all(&target_dir)?;
     let target_dir = target_dir.canonicalize().unwrap().join("bpf");
     let artifacts_dir = target_dir.join("programs").join(probe);
@@ -84,7 +90,7 @@ fn build_probe(cargo: &Path, package: &Path, target_dir: &Path, probe: &str) -> 
     }
     flags.push_str(" -C embed-bitcode=yes");
 
-    let version = build_kernel_version()
+    let version = build_kernel_version(kernel_source_dir)
         .map(|mut v| {
             if v.version >= 5 && v.patchlevel >= 7 {
                 v.patchlevel = 7;
@@ -99,6 +105,7 @@ fn build_probe(cargo: &Path, package: &Path, target_dir: &Path, probe: &str) -> 
     if !Command::new(cargo)
         .current_dir(package)
         .env("RUSTFLAGS", flags)
+        .envs(kernel_source_dir.into_iter().map(|p| ("KERNEL_SOURCE", p)))
         .args("rustc --release --features=probes".split(' '))
         .arg("--target-dir")
         .arg(target_dir.to_str().unwrap())
@@ -155,7 +162,17 @@ pub fn build(
     cargo: &Path,
     package: &Path,
     target_dir: &Path,
+    probes: Vec<String>,
+) -> Result<(), Error> {
+    build_ext(cargo, package, target_dir, probes, None)
+}
+
+pub fn build_ext(
+    cargo: &Path,
+    package: &Path,
+    target_dir: &Path,
     mut probes: Vec<String>,
+    kernel_source_dir: Option<&Path>,
 ) -> Result<(), Error> {
     let path = package.join("Cargo.toml");
     if !path.exists() {
@@ -170,7 +187,7 @@ pub fn build(
     unsafe { llvm::init() };
 
     for probe in probes {
-        build_probe(cargo, package, &target_dir, &probe)?;
+        build_probe(cargo, package, &target_dir, &probe, kernel_source_dir.clone())?;
     }
 
     Ok(())

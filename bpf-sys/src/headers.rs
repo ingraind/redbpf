@@ -69,8 +69,16 @@ pub fn running_kernel_version() -> Option<String> {
     })
 }
 
-pub fn build_kernel_version() -> Result<KernelVersion, Box<dyn Error>> {
-    let KernelHeaders { source: _, build } = kernel_headers_path()?;
+pub fn build_kernel_version(source_dir: Option<&Path>) -> Result<KernelVersion, Box<dyn Error>> {
+    let KernelHeaders { source: _, build } = if let Some(source_dir) = source_dir {
+        KernelHeaders {
+            source: source_dir.to_owned(),
+            build: source_dir.to_owned(),
+        }
+    } else {
+        kernel_headers_path()?
+    };
+
     let make_db = Command::new("make")
         .arg("-qp")
         .arg("-f")
