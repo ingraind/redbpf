@@ -6,12 +6,12 @@ repository = "https://github.com/foniod/redbpf"
 authors = ["Peter Parkanyi <p@symmetree.dev>", "Junyeong Jeong <rhdxmr@gmail.com>"]
 
 [build-dependencies]
-cargo-bpf = { version = "", path = "../../cargo-bpf", default-features = false, features = ["bindings"] }
+cargo-bpf = { version = "1.3", path = "../../cargo-bpf", default-features = false, features = ["bindings"] }
 
 [dependencies]
 cty = "0.2"
-redbpf-macros = { version = "", path = "../../redbpf-macros" }
-redbpf-probes = { version = "", path = "../../redbpf-probes" }
+redbpf-macros = { version = "1.3", path = "../../redbpf-macros" }
+redbpf-probes = { version = "1.3", path = "../../redbpf-probes" }
 memoffset = "0.6.1"
 
 [features]
