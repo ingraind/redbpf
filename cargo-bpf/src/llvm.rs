@@ -101,8 +101,8 @@ pub unsafe fn compile(input: &Path, output: &Path, bc_output: Option<&Path>) -> 
 /// associated relocation sections. But .BTF related sections are not stripped.
 ///
 /// cf) `llvm_sys::debuginfo::LLVMStripModuleDebugInfo` removes BTF sections so do not call it.
-pub(crate) fn strip_debug(target: impl AsRef<Path>) -> Result<()> {
-    Command::new("llvm-strip")
+pub(crate) fn strip_debug(target: &impl AsRef<Path>) -> Result<()> {
+    Command::new("llvm-strip-12")
         .arg("-g")
         .arg(target.as_ref())
         .status()

@@ -1553,6 +1553,10 @@ impl<'base, K: Clone, V: Clone> HashMap<'base, K, V> {
         if mem::size_of::<K>() != base.config.key_size as usize
             || mem::size_of::<V>() != base.config.value_size as usize
         {
+            error!(
+                "map definitions (sizes of key and value) of base `Map' and
+            `HashMap' do not match"
+            );
             return Err(Error::Map);
         }
 
@@ -1609,6 +1613,10 @@ impl<'base, T: Clone> Array<'base, T> {
         if mem::size_of::<T>() != base.config.value_size as usize
             || bpf_map_type_BPF_MAP_TYPE_ARRAY != base.config.type_
         {
+            error!(
+                "map definitions (size of value, map type) of base `Map' and
+            `Array' do not match"
+            );
             return Err(Error::Map);
         }
 
@@ -1720,6 +1728,10 @@ impl<'base, T: Clone> PerCpuArray<'base, T> {
         if mem::size_of::<T>() != base.config.value_size as usize
             || bpf_map_type_BPF_MAP_TYPE_PERCPU_ARRAY != base.config.type_
         {
+            error!(
+                "map definitions (size of value, map type) of base `Map' and
+            `PerCpuArray' do not match"
+            );
             return Err(Error::Map);
         }
 
@@ -1816,6 +1828,10 @@ impl<'base> ProgramArray<'base> {
         if mem::size_of::<u32>() != base.config.key_size as usize
             || mem::size_of::<RawFd>() != base.config.value_size as usize
         {
+            error!(
+                "map definitions (sizes of key and value) of base `Map' and
+            `ProgramArray' do not match"
+            );
             return Err(Error::Map);
         }
 

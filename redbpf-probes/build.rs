@@ -57,6 +57,7 @@ fn main() {
         "xdp_md",
         "ethhdr",
         "iphdr",
+        "ipv6hdr",
         "tcphdr",
         "udphdr",
         "xdp_action",

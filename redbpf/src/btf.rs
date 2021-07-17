@@ -32,6 +32,7 @@ pub(crate) struct BTF {
 
 struct BtfTypeCommon {
     type_: btf_type,
+    #[allow(unused)]
     name_fixed: Option<String>,
     name_raw: String,
 }

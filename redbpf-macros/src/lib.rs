@@ -578,11 +578,7 @@ pub fn tc_action(attrs: TokenStream, item: TokenStream) -> TokenStream {
         fn #outer_ident(skb: *const ::redbpf_probes::bindings::__sk_buff) -> i32 {
             let skb = ::redbpf_probes::socket::SkBuff { skb };
             return match #ident(skb) {
-                Ok(::redbpf_probes::tc::TcAction::Ok) => 0,
-                Ok(::redbpf_probes::tc::TcAction::Shot) => 2,
-                Ok(::redbpf_probes::tc::TcAction::Unspec) => -1,
-                Ok(::redbpf_probes::tc::TcAction::Pipe) => 3,
-                Ok(::redbpf_probes::tc::TcAction::Reclassify) => 1,
+                Ok(act) => act as i32,
                 Err(_) => -1
             };
 

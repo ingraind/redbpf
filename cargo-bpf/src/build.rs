@@ -146,7 +146,7 @@ fn build_probe(cargo: &Path, package: &Path, target_dir: &Path, probe: &str) -> 
     })?;
 
     // stripping debug sections is optional process. So don't care its failure.
-    let _ = llvm::strip_debug(target);
+    let _ = llvm::strip_debug(&target);
 
     Ok(())
 }
